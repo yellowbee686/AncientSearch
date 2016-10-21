@@ -217,6 +217,16 @@ namespace AncientSearch.Model
         {
             int index = content.IndexOf("<BR>\r\n<BR>\r\n<BR>\r\n<BR>\r\n\r\n");
             return content.Substring(index + 28);   //28是上面的部分加三个换行符的值
+            //string part = "<!--------------------------------------------------------->";
+            //int index = content.LastIndexOf(part);
+            //if (index >= 0)
+            //{
+            //    return content.Substring(index + part.Length + 8);   //28是上面的部分加三个换行符的值
+            //}
+            //else
+            //{
+            //    return content;
+            //}         
         }
 
         string trimHtmlMark(string content)
@@ -229,8 +239,13 @@ namespace AncientSearch.Model
             string content = File.ReadAllText(path, Encoding.UTF8);
             content = trimFileHeader(content);
             content = trimHtmlMark(content);
-            string fileName = path.Substring(path.LastIndexOf('\\')).Replace(".htm", ".txt");
-            writeToFile(resultDirPath+fileName, content);
+            string fileName = path.Substring(path.LastIndexOf('\\')).Replace(".htm", ".txt").Replace(".HTM", ".txt");
+            string middleDir = path.Replace(dataDirPath, "");
+            middleDir = middleDir.Substring(0, middleDir.LastIndexOf('\\'));
+            DirectoryInfo dirInfo = new DirectoryInfo(resultDirPath+middleDir);
+            if (!dirInfo.Exists)
+                dirInfo.Create();
+            writeToFile(resultDirPath+middleDir+fileName, content);
         }
 
         void writeToFile(string resultFileName, string content)
